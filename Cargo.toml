@@ -3,6 +3,13 @@ name = "mat4"
 version = "0.1.0"
 authors = ["nathanfaucett <nathanfaucett@gmail.com>"]
 
+keywords = ["mat4", "matrix", "4x4"]
+description = "rust matrix 3x3 functions"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/nathanfaucett/rs-mat4.git"
+homepage = "https://github.com/nathanfaucett/rs-mat4"
+
 [dependencies.num]
 git = "https://github.com/nathanfaucett/rs-num.git"
 
