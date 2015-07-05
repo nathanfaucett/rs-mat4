@@ -1,0 +1,10 @@
+[package]
+name = "mat4"
+version = "0.1.0"
+authors = ["nathanfaucett <nathanfaucett@gmail.com>"]
+
+[dependencies.num]
+git = "https://github.com/nathanfaucett/rs-num.git"
+
+[dependencies.vec3]
+git = "https://github.com/nathanfaucett/rs-vec3.git"
