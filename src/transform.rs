@@ -89,6 +89,25 @@ pub fn compose<T: Num>(out: &mut [T; 16], position: [T; 3], scale: [T; 3], rotat
     out[15] = T::one();
     out
 }
+#[test]
+pub fn test_compose() {
+    let mut m = [
+        1f32, 0f32, 0f32, 0f32,
+        0f32, 1f32, 0f32, 0f32,
+        0f32, 0f32, 1f32, 0f32,
+        0f32, 0f32, 0f32, 1f32
+    ];
+    let position = [0f32, 0f32, 0f32];
+    let scale = [1f32, 1f32, 1f32];
+    let rotation = [0f32, 0f32, 0f32, 1f32];
+    compose(&mut m, position, scale, rotation);
+    assert_eq!(m, [
+        1f32, 0f32, 0f32, 0f32,
+        0f32, 1f32, 0f32, 0f32,
+        0f32, 0f32, 1f32, 0f32,
+        0f32, 0f32, 0f32, 1f32
+    ]);
+}
 
 #[inline(always)]
 pub fn decompose<T: Num>(out: [T; 16], position: &mut [T; 3], scale: &mut [T; 3], rotation: &mut [T; 4]) {
@@ -129,45 +148,55 @@ pub fn decompose<T: Num>(out: [T; 16], position: &mut [T; 3], scale: &mut [T; 3]
     m33 = m33 * inv_sz;
 
     let trace = m11 + m22 + m33;
-    let mut x;
-    let mut y;
-    let mut z;
-    let mut w;
 
     if trace > T::zero() {
         let s = T::from_f32(0.5f32) / (trace + T::one()).sqrt();
+        let inv_s = if s != T::zero() {T::one() / s} else {s};
 
-        w = T::from_f32(0.25f32) / s;
-        x = (m32 - m23) * s;
-        y = (m13 - m31) * s;
-        z = (m21 - m12) * s;
+        rotation[0] = (m32 - m23) * s;
+        rotation[1] = (m13 - m31) * s;
+        rotation[2] = (m21 - m12) * s;
+        rotation[3] = T::from_f32(0.25f32) * inv_s;
     } else if m11 > m22 && m11 > m33 {
         let s = T::from_isize(2isize) * (T::one() + m11 - m22 - m33).sqrt();
+        let inv_s = if s != T::zero() {T::one() / s} else {s};
 
-        w = (m32 - m23) / s;
-        x = T::from_f32(0.25f32) * s;
-        y = (m12 + m21) / s;
-        z = (m13 + m31) / s;
+        rotation[0] = T::from_f32(0.25f32) * s;
+        rotation[1] = (m12 + m21) * inv_s;
+        rotation[2] = (m13 + m31) * inv_s;
+        rotation[3] = (m32 - m23) * inv_s;
     } else if m22 > m33 {
         let s = T::from_isize(2isize) * (T::one() + m22 - m11 - m33).sqrt();
+        let inv_s = if s != T::zero() {T::one() / s} else {s};
 
-        w = (m13 - m31) / s;
-        x = (m12 + m21) / s;
-        y = T::from_f32(0.25f32) * s;
-        z = (m23 + m32) / s;
+        rotation[0] = (m12 + m21) * inv_s;
+        rotation[1] = T::from_f32(0.25f32) * s;
+        rotation[2] = (m23 + m32) * inv_s;
+        rotation[3] = (m13 - m31) * inv_s;
     } else {
         let s = T::from_isize(2isize) * (T::one() + m33 - m11 - m22).sqrt();
+        let inv_s = if s != T::zero() {T::one() / s} else {s};
 
-        w = (m21 - m12) / s;
-        x = (m13 + m31) / s;
-        y = (m23 + m32) / s;
-        z = T::from_f32(0.25f32) * s;
+        rotation[0] = (m13 + m31) * inv_s;
+        rotation[1] = (m23 + m32) * inv_s;
+        rotation[2] = T::from_f32(0.25f32) * s;
+        rotation[3] = (m21 - m12) * inv_s;
     }
-
-    rotation[0] = x;
-    rotation[1] = y;
-    rotation[2] = w;
-    rotation[3] = z;
+}
+#[test]
+pub fn test_decompose() {
+    let mut position = [0f32, 0f32, 0f32];
+    let mut scale = [1f32, 1f32, 1f32];
+    let mut rotation = [0f32, 0f32, 0f32, 1f32];
+    decompose([
+        1f32, 0f32, 0f32, 0f32,
+        0f32, 1f32, 0f32, 0f32,
+        0f32, 0f32, 1f32, 0f32,
+        0f32, 0f32, 0f32, 1f32
+    ], &mut position, &mut scale, &mut rotation);
+    assert_eq!(position, [0f32, 0f32, 0f32]);
+    assert_eq!(scale, [1f32, 1f32, 1f32]);
+    assert_eq!(rotation, [0f32, 0f32, 0f32, 1f32]);
 }
 
 #[inline(always)]
