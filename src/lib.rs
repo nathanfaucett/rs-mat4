@@ -1,3 +1,6 @@
+#![feature(no_std)]
+#![no_std]
+
 extern crate num;
 
 pub mod create;
