@@ -2,20 +2,20 @@
 
 extern crate num;
 
-pub mod create;
+mod create;
 pub use create::*;
 
-pub mod set;
+mod set;
 pub use set::*;
 
-pub mod mul;
+mod mul;
 pub use mul::*;
 
-pub mod sdiv;
+mod sdiv;
 pub use sdiv::*;
 
-pub mod misc;
+mod misc;
 pub use misc::*;
 
-pub mod transform;
+mod transform;
 pub use transform::*;
