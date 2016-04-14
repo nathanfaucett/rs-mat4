@@ -1,7 +1,7 @@
 extern crate vec3;
 
 use num::Num;
-use create::{clone, create_identity};
+use create::{clone, new_identity};
 
 
 #[inline(always)]
@@ -395,7 +395,7 @@ pub fn rotate_z<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16]
 #[inline(always)]
 pub fn rotate<T: Num>(out: &mut [T; 16], a: [T; 16], x: T, y: T, z: T) -> &mut [T; 16] {
     let mut tmp_a = clone(a);
-    let mut tmp_b = create_identity();
+    let mut tmp_b = new_identity();
     rotate_z(&mut tmp_a, a, z);
     rotate_x(&mut tmp_b, tmp_a, x);
     rotate_y(out, tmp_b, y);

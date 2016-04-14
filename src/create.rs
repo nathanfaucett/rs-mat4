@@ -2,7 +2,7 @@ use num::Num;
 
 
 #[inline(always)]
-pub fn create<T: Num>(
+pub fn new<T: Num>(
     m11: T, m12: T, m13: T, m14: T,
     m21: T, m22: T, m23: T, m24: T,
     m31: T, m32: T, m33: T, m34: T,
@@ -13,9 +13,21 @@ pub fn create<T: Num>(
     m31, m32, m33, m34,
     m41, m42, m43, m44
 ]}
+#[inline(always)]
+pub fn create<T: Num>(
+    m11: T, m12: T, m13: T, m14: T,
+    m21: T, m22: T, m23: T, m24: T,
+    m31: T, m32: T, m33: T, m34: T,
+    m41: T, m42: T, m43: T, m44: T
+) -> [T; 16] {new(
+    m11, m12, m13, m14,
+    m21, m22, m23, m24,
+    m31, m32, m33, m34,
+    m41, m42, m43, m44
+)}
 #[test]
-fn test_create() {
-    let m = create(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+fn test_new() {
+    let m = new(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
     assert_eq!(m, [
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -25,8 +37,8 @@ fn test_create() {
 }
 
 #[inline(always)]
-pub fn create_identity<T: Num>() -> [T; 16] {
-    create(
+pub fn new_identity<T: Num>() -> [T; 16] {
+    new(
         T::one(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::one(), T::zero(), T::zero(),
         T::zero(), T::zero(), T::one(), T::zero(),
@@ -34,8 +46,8 @@ pub fn create_identity<T: Num>() -> [T; 16] {
     )
 }
 #[inline(always)]
-pub fn create_zero<T: Num>() -> [T; 16] {
-    create(
+pub fn new_zero<T: Num>() -> [T; 16] {
+    new(
         T::zero(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::zero(), T::zero(), T::zero(),
@@ -45,7 +57,7 @@ pub fn create_zero<T: Num>() -> [T; 16] {
 
 #[inline(always)]
 pub fn clone<T: Num>(m: [T; 16]) -> [T; 16] {
-    create(
+    new(
         m[0], m[4], m[8], m[12],
         m[1], m[5], m[9], m[13],
         m[2], m[6], m[10], m[14],
