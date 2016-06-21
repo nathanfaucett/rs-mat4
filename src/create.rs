@@ -85,3 +85,31 @@ pub fn copy<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
     out[15] = a[15];
     out
 }
+
+#[inline(always)]
+pub fn from_mat2<T: Num>(m: [T; 4]) -> [T; 16] {
+    new(
+        m[0], m[2], T::zero(), T::zero(),
+        m[1], m[3], T::zero(), T::zero(),
+        T::zero(), T::zero(), T::one(), T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
+#[inline(always)]
+pub fn from_mat32<T: Num>(m: [T; 6]) -> [T; 16] {
+    new(
+        m[0], m[2], T::zero(), m[4],
+        m[1], m[3], T::zero(), m[5],
+        T::zero(), T::zero(), T::one(), T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
+#[inline(always)]
+pub fn from_mat3<T: Num>(m: [T; 9]) -> [T; 16] {
+    new(
+        m[0], m[3], m[6], T::zero(),
+        m[1], m[4], m[7], T::zero(),
+        m[2], m[5], m[8], T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
