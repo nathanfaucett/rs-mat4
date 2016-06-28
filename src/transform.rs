@@ -446,12 +446,13 @@ pub fn from_quat<T: Num>(out: &mut [T; 16], q: [T; 4]) -> &mut [T; 16] {
 
 #[inline(always)]
 pub fn frustum<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom: T, near: T, far: T) -> &mut [T; 16] {
-    let x = T::from_isize(2isize) * near / (right - left);
-    let y = T::from_isize(2isize) * near / (top - bottom);
+    let x = (T::from_isize(2isize) * near) / (right - left);
+    let y = (T::from_isize(2isize) * near) / (top - bottom);
+
     let a = (right + left) / (right - left);
     let b = (top + bottom) / (top - bottom);
     let c = -(far + near) / (far - near);
-    let d = -T::from_isize(2isize) * far * near / (far - near);
+    let d = (T::from_isize(-2isize) * far * near) / (far - near);
 
     out[0] = x;
     out[4] = T::zero();
@@ -469,6 +470,7 @@ pub fn frustum<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom: T, 
     out[7] = T::zero();
     out[11] = -T::one();
     out[15] = T::zero();
+
     out
 }
 
@@ -478,6 +480,7 @@ pub fn perspective<T: Num>(out: &mut [T; 16], fov: T, aspect: T, near: T, far: T
     let ymin = -ymax;
     let xmin = ymin * aspect;
     let xmax = ymax * aspect;
+
     frustum(out, xmin, xmax, ymax, ymin, near, far)
 }
 
@@ -486,6 +489,7 @@ pub fn orthographic<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom
     let w = right - left;
     let h = top - bottom;
     let p = far - near;
+
     let x = (right + left) / w;
     let y = (top + bottom) / h;
     let z = (far + near) / p;
@@ -500,11 +504,12 @@ pub fn orthographic<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom
     out[7] = T::zero();
     out[8] = T::zero();
     out[9] = T::zero();
-    out[10] = -T::from_isize(2isize) / p;
+    out[10] = T::from_isize(-2isize) / p;
     out[11] = T::zero();
     out[12] = -x;
     out[13] = -y;
     out[14] = -z;
     out[15] = T::one();
+
     out
 }
