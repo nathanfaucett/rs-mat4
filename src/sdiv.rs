@@ -2,7 +2,7 @@ use num::Num;
 
 
 #[inline(always)]
-pub fn sdiv<T: Num>(out: &mut [T; 16], a: [T; 16], s: T) ->  &mut [T; 16] {
+pub fn sdiv<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], s: T) ->  &'a mut [T; 16] {
     let not_zero = s != T::zero();
     out[0] = if not_zero {a[0] / s} else  {T::zero()};
     out[1] = if not_zero {a[1] / s} else  {T::zero()};
@@ -25,6 +25,6 @@ pub fn sdiv<T: Num>(out: &mut [T; 16], a: [T; 16], s: T) ->  &mut [T; 16] {
 #[test]
 fn test_sdiv() {
     let mut v = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    sdiv(&mut v, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 1);
+    sdiv(&mut v, &[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 1);
     assert!(v == [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 }

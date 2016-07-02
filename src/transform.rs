@@ -5,32 +5,32 @@ use create::{clone, new_identity};
 
 
 #[inline(always)]
-pub fn look_at<T: Num>(out: &mut [T; 16], eye: [T; 3], target: [T; 3], up: [T; 3]) -> &mut [T; 16] {
+pub fn look_at<'a, 'b, T: Num>(out: &'a mut [T; 16], eye: &'b [T; 3], target: &'b [T; 3], up: &'b [T; 3]) -> &'a mut [T; 16] {
     let mut x = vec3::create(T::zero(), T::zero(), T::zero());
     let mut y = vec3::create(T::zero(), T::zero(), T::zero());
     let mut z = vec3::create(T::zero(), T::zero(), T::zero());
     let mut tmp = vec3::create(T::zero(), T::zero(), T::zero());
 
     vec3::sub(&mut z, eye, target);
-    vec3::copy(&mut tmp, z);
-    vec3::normalize(&mut z, tmp);
+    vec3::copy(&mut tmp, &z);
+    vec3::normalize(&mut z, &tmp);
 
-    if vec3::length(z) == T::zero() {
+    if vec3::length(&z) == T::zero() {
         z[2] = T::one();
     }
 
-    vec3::cross(&mut x, up, z);
-    vec3::copy(&mut tmp, x);
-    vec3::normalize(&mut x, tmp);
+    vec3::cross(&mut x, up, &z);
+    vec3::copy(&mut tmp, &x);
+    vec3::normalize(&mut x, &tmp);
 
-    if vec3::length(x) == T::zero() {
+    if vec3::length(&x) == T::zero() {
         z[0] = z[0] + T::from_f32(0.000001);
-        vec3::cross(&mut x, up, z);
-        vec3::copy(&mut tmp, x);
-        vec3::normalize(&mut x, tmp);
+        vec3::cross(&mut x, up, &z);
+        vec3::copy(&mut tmp, &x);
+        vec3::normalize(&mut x, &tmp);
     }
 
-    vec3::cross(&mut y, z, x);
+    vec3::cross(&mut y, &z, &x);
 
     out[0] = x[0];
     out[4] = y[0];
@@ -45,7 +45,7 @@ pub fn look_at<T: Num>(out: &mut [T; 16], eye: [T; 3], target: [T; 3], up: [T; 3
 }
 
 #[inline(always)]
-pub fn compose<T: Num>(out: &mut [T; 16], position: [T; 3], scale: [T; 3], rotation: [T; 4]) -> &mut [T; 16] {
+pub fn compose<'a, 'b, T: Num>(out: &'a mut [T; 16], position: &'b [T; 3], scale: &'b [T; 3], rotation: &'b [T; 4]) -> &'a mut [T; 16] {
     let x = rotation[0];
     let y = rotation[1];
     let z = rotation[2];
@@ -100,7 +100,7 @@ pub fn test_compose() {
     let position = [0f32, 0f32, 0f32];
     let scale = [1f32, 1f32, 1f32];
     let rotation = [0f32, 0f32, 0f32, 1f32];
-    compose(&mut m, position, scale, rotation);
+    compose(&mut m, &position, &scale, &rotation);
     assert_eq!(m, [
         1f32, 0f32, 0f32, 0f32,
         0f32, 1f32, 0f32, 0f32,
@@ -110,7 +110,7 @@ pub fn test_compose() {
 }
 
 #[inline(always)]
-pub fn decompose<T: Num>(out: [T; 16], position: &mut [T; 3], scale: &mut [T; 3], rotation: &mut [T; 4]) {
+pub fn decompose<'a, 'b, T: Num>(out: &'b [T; 16], position: &mut [T; 3], scale: &mut [T; 3], rotation: &mut [T; 4]) {
     let mut m11 = out[0];
     let mut m12 = out[4];
     let mut m13 = out[8];
@@ -188,7 +188,7 @@ pub fn test_decompose() {
     let mut position = [0f32, 0f32, 0f32];
     let mut scale = [1f32, 1f32, 1f32];
     let mut rotation = [0f32, 0f32, 0f32, 1f32];
-    decompose([
+    decompose(&[
         1f32, 0f32, 0f32, 0f32,
         0f32, 1f32, 0f32, 0f32,
         0f32, 0f32, 1f32, 0f32,
@@ -200,7 +200,7 @@ pub fn test_decompose() {
 }
 
 #[inline(always)]
-pub fn set_position<T: Num>(out: &mut [T; 16], v: [T; 3]) -> &mut [T; 16] {
+pub fn set_position<'a, 'b, T: Num>(out: &'a mut [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     out[12] = v[0];
     out[13] = v[1];
     out[14] = v[2];
@@ -208,7 +208,7 @@ pub fn set_position<T: Num>(out: &mut [T; 16], v: [T; 3]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn extract_position<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
+pub fn extract_position<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     out[12] = a[12];
     out[13] = a[13];
     out[14] = a[14];
@@ -216,7 +216,7 @@ pub fn extract_position<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn extract_rotation<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
+pub fn extract_rotation<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     let sx = vec3::length_values(a[0], a[1], a[2]);
     let sy = vec3::length_values(a[4], a[5], a[6]);
     let sz = vec3::length_values(a[8], a[9], a[10]);
@@ -234,7 +234,7 @@ pub fn extract_rotation<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn translate<T: Num>(out: &mut [T; 16], a: [T; 16], v: [T; 3]) -> &mut [T; 16] {
+pub fn translate<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     let x = v[0];
     let y = v[1];
     let z = v[2];
@@ -272,7 +272,7 @@ pub fn translate<T: Num>(out: &mut [T; 16], a: [T; 16], v: [T; 3]) -> &mut [T; 1
 }
 
 #[inline(always)]
-pub fn scale<T: Num>(out: &mut [T; 16], a: [T; 16], v: [T; 3]) -> &mut [T; 16] {
+pub fn scale<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     let x = v[0];
     let y = v[1];
     let z = v[2];
@@ -297,7 +297,7 @@ pub fn scale<T: Num>(out: &mut [T; 16], a: [T; 16], v: [T; 3]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn rotate_x<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16] {
+pub fn rotate_x<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a10 = a[4];
@@ -329,7 +329,7 @@ pub fn rotate_x<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16]
 }
 
 #[inline(always)]
-pub fn rotate_y<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16] {
+pub fn rotate_y<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a00 = a[0];
@@ -361,7 +361,7 @@ pub fn rotate_y<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16]
 }
 
 #[inline(always)]
-pub fn rotate_z<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16] {
+pub fn rotate_z<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a00 = a[0];
@@ -393,17 +393,17 @@ pub fn rotate_z<T: Num>(out: &mut [T; 16], a: [T; 16], angle: T) -> &mut [T; 16]
 }
 
 #[inline(always)]
-pub fn rotate<T: Num>(out: &mut [T; 16], a: [T; 16], x: T, y: T, z: T) -> &mut [T; 16] {
+pub fn rotate<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], x: T, y: T, z: T) -> &'a mut [T; 16] {
     let mut tmp_a = clone(a);
     let mut tmp_b = new_identity();
     rotate_z(&mut tmp_a, a, z);
-    rotate_x(&mut tmp_b, tmp_a, x);
-    rotate_y(out, tmp_b, y);
+    rotate_x(&mut tmp_b, &tmp_a, x);
+    rotate_y(out, &tmp_b, y);
     out
 }
 
 #[inline(always)]
-pub fn from_quat<T: Num>(out: &mut [T; 16], q: [T; 4]) -> &mut [T; 16] {
+pub fn from_quat<'a, 'b, T: Num>(out: &'a mut [T; 16], q: &'b [T; 4]) -> &'a mut [T; 16] {
     let x = q[0];
     let y = q[1];
     let z = q[2];
@@ -445,7 +445,7 @@ pub fn from_quat<T: Num>(out: &mut [T; 16], q: [T; 4]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn frustum<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom: T, near: T, far: T) -> &mut [T; 16] {
+pub fn frustum<'a, 'b, T: Num>(out: &'a mut [T; 16], left: T, right: T, top: T, bottom: T, near: T, far: T) -> &'a mut [T; 16] {
     let x = (T::from_isize(2isize) * near) / (right - left);
     let y = (T::from_isize(2isize) * near) / (top - bottom);
 
@@ -475,7 +475,7 @@ pub fn frustum<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom: T, 
 }
 
 #[inline(always)]
-pub fn perspective<T: Num>(out: &mut [T; 16], fov: T, aspect: T, near: T, far: T) -> &mut [T; 16] {
+pub fn perspective<'a, 'b, T: Num>(out: &'a mut [T; 16], fov: T, aspect: T, near: T, far: T) -> &'a mut [T; 16] {
     let ymax = near * (fov / T::from_isize(2isize)).tan();
     let ymin = -ymax;
     let xmin = ymin * aspect;
@@ -485,7 +485,7 @@ pub fn perspective<T: Num>(out: &mut [T; 16], fov: T, aspect: T, near: T, far: T
 }
 
 #[inline(always)]
-pub fn orthographic<T: Num>(out: &mut [T; 16], left: T, right: T, top: T, bottom: T, near: T, far: T) -> &mut [T; 16] {
+pub fn orthographic<'a, 'b, T: Num>(out: &'a mut [T; 16], left: T, right: T, top: T, bottom: T, near: T, far: T) -> &'a mut [T; 16] {
     let w = right - left;
     let h = top - bottom;
     let p = far - near;

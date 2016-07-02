@@ -56,7 +56,7 @@ pub fn new_zero<T: Num>() -> [T; 16] {
 }
 
 #[inline(always)]
-pub fn clone<T: Num>(m: [T; 16]) -> [T; 16] {
+pub fn clone<'b, T: Num>(m: &'b [T; 16]) -> [T; 16] {
     new(
         m[0], m[4], m[8], m[12],
         m[1], m[5], m[9], m[13],
@@ -66,7 +66,7 @@ pub fn clone<T: Num>(m: [T; 16]) -> [T; 16] {
 }
 
 #[inline(always)]
-pub fn copy<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
+pub fn copy<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     out[0] = a[0];
     out[1] = a[1];
     out[2] = a[2];
@@ -87,7 +87,7 @@ pub fn copy<T: Num>(out: &mut [T; 16], a: [T; 16]) -> &mut [T; 16] {
 }
 
 #[inline(always)]
-pub fn from_mat2<T: Num>(m: [T; 4]) -> [T; 16] {
+pub fn from_mat2<'a, 'b, T: Num>(m: &'b [T; 4]) -> [T; 16] {
     new(
         m[0], m[2], T::zero(), T::zero(),
         m[1], m[3], T::zero(), T::zero(),
@@ -96,7 +96,7 @@ pub fn from_mat2<T: Num>(m: [T; 4]) -> [T; 16] {
     )
 }
 #[inline(always)]
-pub fn from_mat32<T: Num>(m: [T; 6]) -> [T; 16] {
+pub fn from_mat32<'a, 'b, T: Num>(m: &'b [T; 6]) -> [T; 16] {
     new(
         m[0], m[2], T::zero(), m[4],
         m[1], m[3], T::zero(), m[5],
@@ -105,7 +105,7 @@ pub fn from_mat32<T: Num>(m: [T; 6]) -> [T; 16] {
     )
 }
 #[inline(always)]
-pub fn from_mat3<T: Num>(m: [T; 9]) -> [T; 16] {
+pub fn from_mat3<'a, 'b, T: Num>(m: &'b [T; 9]) -> [T; 16] {
     new(
         m[0], m[3], m[6], T::zero(),
         m[1], m[4], m[7], T::zero(),
