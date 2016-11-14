@@ -1,47 +1,90 @@
-extern crate vec3;
+use core::f64::EPSILON;
 
 use num::Num;
+use vec3;
+
 use create::{clone, new_identity};
+use set::identity;
 
 
 #[inline(always)]
 pub fn look_at<'a, 'b, T: Num>(out: &'a mut [T; 16], eye: &'b [T; 3], target: &'b [T; 3], up: &'b [T; 3]) -> &'a mut [T; 16] {
-    let mut x = vec3::create(T::zero(), T::zero(), T::zero());
-    let mut y = vec3::create(T::zero(), T::zero(), T::zero());
-    let mut z = vec3::create(T::zero(), T::zero(), T::zero());
-    let mut tmp = vec3::create(T::zero(), T::zero(), T::zero());
+    let eyex = eye[0];
+    let eyey = eye[1];
+    let eyez = eye[2];
+    let upx = up[0];
+    let upy = up[1];
+    let upz = up[2];
+    let targetx = target[0];
+    let targety = target[1];
+    let targetz = target[2];
+    let e = T::from_f64(EPSILON);
 
-    vec3::sub(&mut z, eye, target);
-    vec3::copy(&mut tmp, &z);
-    vec3::normalize(&mut z, &tmp);
+    let mut z0 = eyex - targetx;
+    let mut z1 = eyey - targety;
+    let mut z2 = eyez - targetz;
 
-    if vec3::length(&z) == T::zero() {
-        z[2] = T::one();
+    if  z0.abs() < e &&
+        z1.abs() < e &&
+        z2.abs() < e
+     {
+        identity(out)
+    } else {
+        let mut len = T::one() / (z0 * z0 + z1 * z1 + z2 * z2).sqrt();
+        z0 = z0 * len;
+        z1 = z1 * len;
+        z2 = z2 * len;
+
+        let mut x0 = upy * z2 - upz * z1;
+        let mut x1 = upz * z0 - upx * z2;
+        let mut x2 = upx * z1 - upy * z0;
+        len = (x0 * x0 + x1 * x1 + x2 * x2).sqrt();
+        if len == T::zero() {
+            x0 = T::zero();
+            x1 = T::zero();
+            x2 = T::zero();
+        } else {
+            len = T::one() / len;
+            x0 = x0 * len;
+            x1 = x1 * len;
+            x2 = x2 * len;
+        }
+
+        let mut y0 = z1 * x2 - z2 * x1;
+        let mut y1 = z2 * x0 - z0 * x2;
+        let mut y2 = z0 * x1 - z1 * x0;
+
+        len = (y0 * y0 + y1 * y1 + y2 * y2).sqrt();
+        if len == T::zero() {
+            y0 = T::zero();
+            y1 = T::zero();
+            y2 = T::zero();
+        } else {
+            len = T::one() / len;
+            y0 = y0 * len;
+            y1 = y1 * len;
+            y2 = y2 * len;
+        }
+
+        out[0] = x0;
+        out[1] = x1;
+        out[2] = x2;
+        out[3] = T::zero();
+        out[4] = y0;
+        out[5] = y1;
+        out[6] = y2;
+        out[7] = T::zero();
+        out[8] = z0;
+        out[9] = z1;
+        out[10] = z2;
+        out[11] = T::zero();
+        out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+        out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+        out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+        out[15] = T::one();
+
+        return out;
     }
-
-    vec3::cross(&mut x, up, &z);
-    vec3::copy(&mut tmp, &x);
-    vec3::normalize(&mut x, &tmp);
-
-    if vec3::length(&x) == T::zero() {
-        z[0] = z[0] + T::from_f32(0.000001);
-        vec3::cross(&mut x, up, &z);
-        vec3::copy(&mut tmp, &x);
-        vec3::normalize(&mut x, &tmp);
-    }
-
-    vec3::cross(&mut y, &z, &x);
-
-    out[0] = x[0];
-    out[4] = y[0];
-    out[8] = z[0];
-    out[1] = x[1];
-    out[5] = y[1];
-    out[9] = z[1];
-    out[2] = x[2];
-    out[6] = y[2];
-    out[10] = z[2];
-    out
 }
 
 #[inline(always)]

@@ -2,6 +2,7 @@
 
 
 extern crate num;
+extern crate vec3;
 
 
 pub mod create;
