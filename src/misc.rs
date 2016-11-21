@@ -1,10 +1,10 @@
-use num::Num;
+use num::Unsigned;
 use approx::Approx;
 use set::identity;
 
 
 #[inline(always)]
-pub fn inverse<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+pub fn inverse<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     let a00 = a[0];
     let a01 = a[1];
     let a02 = a[2];
@@ -69,7 +69,7 @@ fn test_inverse() {
 }
 
 #[inline(always)]
-pub fn determinant<'a, 'b, T: Num>(out: &'b [T; 16]) -> T {
+pub fn determinant<'a, 'b, T: Unsigned>(out: &'b [T; 16]) -> T {
     let a00 = out[0];
     let a01 = out[1];
     let a02 = out[2];
@@ -108,7 +108,7 @@ fn test_determinant() {
 }
 
 #[inline(always)]
-pub fn transpose<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+pub fn transpose<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     out[0] = a[0];
     out[1] = a[4];
     out[2] = a[8];
@@ -135,12 +135,12 @@ fn test_transpose() {
 }
 
 #[inline(always)]
-pub fn eq<'a, T: Num>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
-    !nq(a, b)
+pub fn eq<'a, T: Unsigned>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
+    !ne(a, b)
 }
 
 #[inline(always)]
-pub fn nq<'a, T: Num>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
+pub fn ne<'a, T: Unsigned>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
     !a[0].approx_eq(b[0]) ||
     !a[1].approx_eq(b[1]) ||
     !a[2].approx_eq(b[2]) ||
@@ -159,13 +159,13 @@ pub fn nq<'a, T: Num>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
     !a[15].approx_eq(b[15])
 }
 #[test]
-fn test_nq() {
-    assert_eq!(nq(
+fn test_ne() {
+    assert_eq!(ne(
         &[1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32],
         &[1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32]),
         false
     );
-    assert_eq!(nq(
+    assert_eq!(ne(
         &[0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32, 0f32],
         &[1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32]),
         true
