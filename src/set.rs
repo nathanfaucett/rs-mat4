@@ -46,3 +46,34 @@ pub fn identity<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
         T::zero(), T::zero(), T::zero(), T::one()
     )
 }
+
+#[inline(always)]
+pub fn from_mat2<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut [T; 16] {
+    set(
+        out,
+        m[0], m[2], T::zero(), T::zero(),
+        m[1], m[3], T::zero(), T::zero(),
+        T::zero(), T::zero(), T::one(), T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
+#[inline(always)]
+pub fn from_mat32<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mut [T; 16] {
+    set(
+        out,
+        m[0], m[2], T::zero(), m[4],
+        m[1], m[3], T::zero(), m[5],
+        T::zero(), T::zero(), T::one(), T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
+#[inline(always)]
+pub fn from_mat3<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 9]) -> &'a mut [T; 16] {
+    set(
+        out,
+        m[0], m[3], m[6], T::zero(),
+        m[1], m[4], m[7], T::zero(),
+        m[2], m[5], m[8], T::zero(),
+        T::zero(), T::zero(), T::zero(), T::one()
+    )
+}
