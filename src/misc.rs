@@ -1,5 +1,4 @@
 use num::Unsigned;
-use approx::Approx;
 use set::identity;
 
 
