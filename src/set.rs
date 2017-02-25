@@ -1,8 +1,8 @@
-use num::Unsigned;
+use num::Num;
 
 
-#[inline(always)]
-pub fn set<'a, 'b, T: Unsigned>(
+#[inline]
+pub fn set<'a, 'b, T: Num>(
     out: &'a mut [T; 16],
     m11: T, m12: T, m13: T, m14: T,
     m21: T, m22: T, m23: T, m24: T,
@@ -28,8 +28,8 @@ pub fn set<'a, 'b, T: Unsigned>(
     out
 }
 
-#[inline(always)]
-pub fn zero<'a, 'b, T: Unsigned>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
+#[inline]
+pub fn zero<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     set(out,
         T::zero(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::zero(), T::zero(), T::zero(),
@@ -37,8 +37,8 @@ pub fn zero<'a, 'b, T: Unsigned>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
         T::zero(), T::zero(), T::zero(), T::zero()
     )
 }
-#[inline(always)]
-pub fn identity<'a, 'b, T: Unsigned>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
+#[inline]
+pub fn identity<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     set(out,
         T::one(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::one(), T::zero(), T::zero(),
@@ -47,8 +47,8 @@ pub fn identity<'a, 'b, T: Unsigned>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     )
 }
 
-#[inline(always)]
-pub fn from_mat2<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut [T; 16] {
+#[inline]
+pub fn from_mat2<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[2], T::zero(), T::zero(),
@@ -57,8 +57,8 @@ pub fn from_mat2<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'
         T::zero(), T::zero(), T::zero(), T::one()
     )
 }
-#[inline(always)]
-pub fn from_mat32<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mut [T; 16] {
+#[inline]
+pub fn from_mat32<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[2], T::zero(), m[4],
@@ -67,8 +67,8 @@ pub fn from_mat32<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &
         T::zero(), T::zero(), T::zero(), T::one()
     )
 }
-#[inline(always)]
-pub fn from_mat3<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], m: &'b [T; 9]) -> &'a mut [T; 16] {
+#[inline]
+pub fn from_mat3<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 9]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[3], m[6], T::zero(),

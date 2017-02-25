@@ -1,7 +1,9 @@
 #![no_std]
 
 
+extern crate approx_eq;
 extern crate num;
+extern crate signed;
 extern crate vec3;
 
 

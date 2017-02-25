@@ -1,13 +1,14 @@
 use core::f64::EPSILON;
 
-use num::{Signed, Unsigned};
+use num::Num;
+use signed::Signed;
 use vec3;
 
 use create::{clone, new_identity};
 use set::identity;
 
 
-#[inline(always)]
+#[inline]
 pub fn look_at<'a, 'b, T: Signed>(out: &'a mut [T; 16], eye: &'b [T; 3], target: &'b [T; 3], up: &'b [T; 3]) -> &'a mut [T; 16] {
     let eyex = eye[0];
     let eyey = eye[1];
@@ -87,8 +88,8 @@ pub fn look_at<'a, 'b, T: Signed>(out: &'a mut [T; 16], eye: &'b [T; 3], target:
     }
 }
 
-#[inline(always)]
-pub fn compose<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], position: &'b [T; 3], scale: &'b [T; 3], rotation: &'b [T; 4]) -> &'a mut [T; 16] {
+#[inline]
+pub fn compose<'a, 'b, T: Num>(out: &'a mut [T; 16], position: &'b [T; 3], scale: &'b [T; 3], rotation: &'b [T; 4]) -> &'a mut [T; 16] {
     let x = rotation[0];
     let y = rotation[1];
     let z = rotation[2];
@@ -152,8 +153,8 @@ pub fn test_compose() {
     ]);
 }
 
-#[inline(always)]
-pub fn decompose<'a, 'b, T: Unsigned>(out: &'b [T; 16], position: &mut [T; 3], scale: &mut [T; 3], rotation: &mut [T; 4]) {
+#[inline]
+pub fn decompose<'a, 'b, T: Num>(out: &'b [T; 16], position: &mut [T; 3], scale: &mut [T; 3], rotation: &mut [T; 4]) {
     let mut m11 = out[0];
     let mut m12 = out[4];
     let mut m13 = out[8];
@@ -242,24 +243,24 @@ pub fn test_decompose() {
     assert_eq!(rotation, [0f32, 0f32, 0f32, 1f32]);
 }
 
-#[inline(always)]
-pub fn set_position<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
+#[inline]
+pub fn set_position<'a, 'b, T: Num>(out: &'a mut [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     out[12] = v[0];
     out[13] = v[1];
     out[14] = v[2];
     out
 }
 
-#[inline(always)]
-pub fn extract_position<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+#[inline]
+pub fn extract_position<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     out[12] = a[12];
     out[13] = a[13];
     out[14] = a[14];
     out
 }
 
-#[inline(always)]
-pub fn extract_rotation<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+#[inline]
+pub fn extract_rotation<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     let sx = vec3::length_values(a[0], a[1], a[2]);
     let sy = vec3::length_values(a[4], a[5], a[6]);
     let sz = vec3::length_values(a[8], a[9], a[10]);
@@ -276,8 +277,8 @@ pub fn extract_rotation<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16
     out
 }
 
-#[inline(always)]
-pub fn translate<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
+#[inline]
+pub fn translate<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     let x = v[0];
     let y = v[1];
     let z = v[2];
@@ -314,8 +315,8 @@ pub fn translate<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], v: &
     out
 }
 
-#[inline(always)]
-pub fn scale<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
+#[inline]
+pub fn scale<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [T; 3]) -> &'a mut [T; 16] {
     let x = v[0];
     let y = v[1];
     let z = v[2];
@@ -339,8 +340,8 @@ pub fn scale<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], v: &'b [
     out
 }
 
-#[inline(always)]
-pub fn rotate_x<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
+#[inline]
+pub fn rotate_x<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a10 = a[4];
@@ -371,8 +372,8 @@ pub fn rotate_x<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle
     out
 }
 
-#[inline(always)]
-pub fn rotate_y<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
+#[inline]
+pub fn rotate_y<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a00 = a[0];
@@ -403,8 +404,8 @@ pub fn rotate_y<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle
     out
 }
 
-#[inline(always)]
-pub fn rotate_z<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
+#[inline]
+pub fn rotate_z<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], angle: T) -> &'a mut [T; 16] {
     let s = angle.sin();
     let c = angle.cos();
     let a00 = a[0];
@@ -435,8 +436,8 @@ pub fn rotate_z<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], angle
     out
 }
 
-#[inline(always)]
-pub fn rotate<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], x: T, y: T, z: T) -> &'a mut [T; 16] {
+#[inline]
+pub fn rotate<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], x: T, y: T, z: T) -> &'a mut [T; 16] {
     let mut tmp_a = clone(a);
     let mut tmp_b = new_identity();
     rotate_z(&mut tmp_a, a, z);
@@ -445,8 +446,8 @@ pub fn rotate<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], a: &'b [T; 16], x: T, y
     out
 }
 
-#[inline(always)]
-pub fn from_quat<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], q: &'b [T; 4]) -> &'a mut [T; 16] {
+#[inline]
+pub fn from_quat<'a, 'b, T: Num>(out: &'a mut [T; 16], q: &'b [T; 4]) -> &'a mut [T; 16] {
     let x = q[0];
     let y = q[1];
     let z = q[2];
@@ -487,7 +488,7 @@ pub fn from_quat<'a, 'b, T: Unsigned>(out: &'a mut [T; 16], q: &'b [T; 4]) -> &'
     out
 }
 
-#[inline(always)]
+#[inline]
 pub fn frustum<'a, 'b, T: Signed>(out: &'a mut [T; 16], top: T, right: T, bottom: T, left: T, near: T, far: T) -> &'a mut [T; 16] {
     let x = (T::from_isize(2isize) * near) / (right - left);
     let y = (T::from_isize(2isize) * near) / (top - bottom);
@@ -517,7 +518,7 @@ pub fn frustum<'a, 'b, T: Signed>(out: &'a mut [T; 16], top: T, right: T, bottom
     out
 }
 
-#[inline(always)]
+#[inline]
 pub fn perspective<'a, 'b, T: Signed>(out: &'a mut [T; 16], fov: T, aspect: T, near: T, far: T) -> &'a mut [T; 16] {
     let ymax = near * (fov / T::from_isize(2isize)).tan();
     let ymin = -ymax;
@@ -527,7 +528,7 @@ pub fn perspective<'a, 'b, T: Signed>(out: &'a mut [T; 16], fov: T, aspect: T, n
     frustum(out, ymax, xmax, ymin, xmin, near, far)
 }
 
-#[inline(always)]
+#[inline]
 pub fn orthographic<'a, 'b, T: Signed>(out: &'a mut [T; 16], top: T, right: T, bottom: T, left: T, near: T, far: T) -> &'a mut [T; 16] {
     let w = right - left;
     let h = top - bottom;
