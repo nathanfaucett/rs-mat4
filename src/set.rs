@@ -2,7 +2,7 @@ use num::Num;
 
 
 #[inline]
-pub fn set<'a, 'b, T: Num>(
+pub fn set<'a, 'b, T: Copy + Num>(
     out: &'a mut [T; 16],
     m11: T, m12: T, m13: T, m14: T,
     m21: T, m22: T, m23: T, m24: T,
@@ -29,7 +29,7 @@ pub fn set<'a, 'b, T: Num>(
 }
 
 #[inline]
-pub fn zero<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
+pub fn zero<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     set(out,
         T::zero(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::zero(), T::zero(), T::zero(),
@@ -38,7 +38,7 @@ pub fn zero<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     )
 }
 #[inline]
-pub fn identity<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
+pub fn identity<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
     set(out,
         T::one(), T::zero(), T::zero(), T::zero(),
         T::zero(), T::one(), T::zero(), T::zero(),
@@ -48,7 +48,7 @@ pub fn identity<'a, 'b, T: Num>(out: &'a mut [T; 16]) -> &'a mut [T; 16] {
 }
 
 #[inline]
-pub fn from_mat2<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut [T; 16] {
+pub fn from_mat2<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[2], T::zero(), T::zero(),
@@ -58,7 +58,7 @@ pub fn from_mat2<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 4]) -> &'a mut
     )
 }
 #[inline]
-pub fn from_mat32<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mut [T; 16] {
+pub fn from_mat32<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[2], T::zero(), m[4],
@@ -68,7 +68,7 @@ pub fn from_mat32<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 6]) -> &'a mu
     )
 }
 #[inline]
-pub fn from_mat3<'a, 'b, T: Num>(out: &'a mut [T; 16], m: &'b [T; 9]) -> &'a mut [T; 16] {
+pub fn from_mat3<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], m: &'b [T; 9]) -> &'a mut [T; 16] {
     set(
         out,
         m[0], m[3], m[6], T::zero(),

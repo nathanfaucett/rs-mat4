@@ -4,7 +4,7 @@ use set::identity;
 
 
 #[inline]
-pub fn inverse<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+pub fn inverse<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     let a00 = a[0];
     let a01 = a[1];
     let a02 = a[2];
@@ -69,7 +69,7 @@ fn test_inverse() {
 }
 
 #[inline]
-pub fn determinant<'a, 'b, T: Num>(out: &'b [T; 16]) -> T {
+pub fn determinant<'a, 'b, T: Copy + Num>(out: &'b [T; 16]) -> T {
     let a00 = out[0];
     let a01 = out[1];
     let a02 = out[2];
@@ -108,7 +108,7 @@ fn test_determinant() {
 }
 
 #[inline]
-pub fn transpose<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
+pub fn transpose<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], a: &'b [T; 16]) -> &'a mut [T; 16] {
     out[0] = a[0];
     out[1] = a[4];
     out[2] = a[8];
@@ -135,28 +135,28 @@ fn test_transpose() {
 }
 
 #[inline]
-pub fn eq<'a, T: Num + ApproxEq>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
+pub fn eq<'a, T: Copy + Num + ApproxEq>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
     !ne(a, b)
 }
 
 #[inline]
-pub fn ne<'a, T: Num + ApproxEq>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
-    !a[0].approx_eq(b[0]) ||
-    !a[1].approx_eq(b[1]) ||
-    !a[2].approx_eq(b[2]) ||
-    !a[3].approx_eq(b[3]) ||
-    !a[4].approx_eq(b[4]) ||
-    !a[5].approx_eq(b[5]) ||
-    !a[6].approx_eq(b[6]) ||
-    !a[7].approx_eq(b[7]) ||
-    !a[8].approx_eq(b[8]) ||
-    !a[9].approx_eq(b[9]) ||
-    !a[10].approx_eq(b[10]) ||
-    !a[11].approx_eq(b[11]) ||
-    !a[12].approx_eq(b[12]) ||
-    !a[13].approx_eq(b[13]) ||
-    !a[14].approx_eq(b[14]) ||
-    !a[15].approx_eq(b[15])
+pub fn ne<'a, T: Copy + Num + ApproxEq>(a: &'a [T; 16], b: &'a [T; 16]) -> bool {
+    !a[0].approx_eq(&b[0]) ||
+    !a[1].approx_eq(&b[1]) ||
+    !a[2].approx_eq(&b[2]) ||
+    !a[3].approx_eq(&b[3]) ||
+    !a[4].approx_eq(&b[4]) ||
+    !a[5].approx_eq(&b[5]) ||
+    !a[6].approx_eq(&b[6]) ||
+    !a[7].approx_eq(&b[7]) ||
+    !a[8].approx_eq(&b[8]) ||
+    !a[9].approx_eq(&b[9]) ||
+    !a[10].approx_eq(&b[10]) ||
+    !a[11].approx_eq(&b[11]) ||
+    !a[12].approx_eq(&b[12]) ||
+    !a[13].approx_eq(&b[13]) ||
+    !a[14].approx_eq(&b[14]) ||
+    !a[15].approx_eq(&b[15])
 }
 #[test]
 fn test_ne() {

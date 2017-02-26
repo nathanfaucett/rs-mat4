@@ -2,7 +2,7 @@ use num::Num;
 
 
 #[inline]
-pub fn sdiv<'a, 'b, T: Num>(out: &'a mut [T; 16], a: &'b [T; 16], s: T) ->  &'a mut [T; 16] {
+pub fn sdiv<'a, 'b, T: Copy + Num>(out: &'a mut [T; 16], a: &'b [T; 16], s: T) ->  &'a mut [T; 16] {
     let not_zero = s != T::zero();
     out[0] = if not_zero {a[0] / s} else  {T::zero()};
     out[1] = if not_zero {a[1] / s} else  {T::zero()};
